@@ -31,7 +31,7 @@ services:
     environment:
       <<: *cenv
       POCKETBASE_ENCRYPTION_KEY: ${POCKETBASE_ENCRYPTION_KEY}
-      ORIGIN: http://localhost:8080
+      ORIGIN: http://localhost:${APP_PORT}
     ports:
       - "8090:8090"
     networks:
@@ -55,7 +55,7 @@ services:
         condition: service_healthy
     environment:
       <<: *cenv
-      ORIGIN: http://raspi5.fritz.box:8080
+      ORIGIN: http://raspi5.fritz.box:${APP_PORT}
       BODY_SIZE_LIMIT: Infinity
       PUBLIC_POCKETBASE_URL: http://db:8090
       PUBLIC_DISABLE_SIGNUP: "false"
@@ -69,7 +69,7 @@ services:
       - ${BASE_DIR}/data/uploads:/app/uploads
       # - ${BASE_DIR}/data/about.md:/app/build/client/md/about.md
     ports:
-      - "8080:3000"
+      - "${APP_PORT}:3000"
     networks:
       - wanderer
     restart: unless-stopped
