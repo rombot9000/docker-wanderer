@@ -16,7 +16,7 @@ services:
     networks:
       - wanderer
     volumes:
-      - ./data/data.ms:/meili_data/data.ms
+      - ${BASE_DIR}/data/data.ms:/meili_data/data.ms
     restart: unless-stopped
     healthcheck:
       test: curl --fail http://localhost:7700/health || exit 1
@@ -40,7 +40,7 @@ services:
       - wanderer
     restart: unless-stopped
     volumes:
-      - ./data/pb_data:/pb_data
+      - ${BASE_DIR}/data/pb_data:/pb_data
     healthcheck:
       test: ["CMD", "/curl", "--fail", "http://localhost:8090/health"]
       interval: 15s
@@ -68,8 +68,8 @@ services:
       VALHALLA_URL: https://valhalla1.openstreetmap.de
       NOMINATIM_URL: https://nominatim.openstreetmap.org
     volumes:
-      - ./data/uploads:/app/uploads
-      # - ./data/about.md:/app/build/client/md/about.md
+      - ${BASE_DIR}/data/uploads:/app/uploads
+      # - ${BASE_DIR}/data/about.md:/app/build/client/md/about.md
     ports:
       - "8080:3000"
     networks:
@@ -86,7 +86,7 @@ services:
 #   ports:
 #     - "8002:8002"
 #   volumes:
-#     - ./data/valhalla:/custom_files
+#     - ${BASE_DIR}/data/valhalla:/custom_files
 #   environment:
 #     - tile_urls=https://download.geofabrik.de/europe/germany/bayern/oberbayern-latest.osm.pbf
 #     - use_tiles_ignore_pbf=True
