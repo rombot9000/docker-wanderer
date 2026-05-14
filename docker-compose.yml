@@ -1,8 +1,6 @@
-version: '3'
-
 x-common-env: &cenv
   MEILI_URL: http://search:7700
-  MEILI_MASTER_KEY: vODkljPcfFANYNepCHyDyGjzAMPcdHnrb6X5KyXQPWo
+  MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
 
 services:
   search:
@@ -16,7 +14,7 @@ services:
     networks:
       - wanderer
     volumes:
-      - ./data/data.ms:/meili_data/data.ms
+      - ${BASE_DIR}/data/data.ms:/meili_data/data.ms
     restart: unless-stopped
     healthcheck:
       test: curl --fail http://localhost:7700/health || exit 1
@@ -32,15 +30,15 @@ services:
         condition: service_healthy
     environment:
       <<: *cenv
-      POCKETBASE_ENCRYPTION_KEY: fde406459dc1f6ca6f348e1f44a9a2af
-      ORIGIN: http://localhost:3000
+      POCKETBASE_ENCRYPTION_KEY: ${POCKETBASE_ENCRYPTION_KEY}
+      ORIGIN: http://localhost:${APP_PORT}
     ports:
       - "8090:8090"
     networks:
       - wanderer
     restart: unless-stopped
     volumes:
-      - ./data/pb_data:/pb_data
+      - ${BASE_DIR}/data/pb_data:/pb_data
     healthcheck:
       test: ["CMD", "/curl", "--fail", "http://localhost:8090/health"]
       interval: 15s
@@ -57,7 +55,7 @@ services:
         condition: service_healthy
     environment:
       <<: *cenv
-      ORIGIN: http://localhost:3000
+      ORIGIN: http://raspi5.fritz.box:${APP_PORT}
       BODY_SIZE_LIMIT: Infinity
       PUBLIC_POCKETBASE_URL: http://db:8090
       PUBLIC_DISABLE_SIGNUP: "false"
@@ -68,15 +66,15 @@ services:
       PUBLIC_VALHALLA_URL: https://valhalla1.openstreetmap.de
       PUBLIC_NOMINATIM_URL: https://nominatim.openstreetmap.org
     volumes:
-      - ./data/uploads:/app/uploads
-      # - ./data/about.md:/app/build/client/md/about.md
+      - ${BASE_DIR}/data/uploads:/app/uploads
+      # - ${BASE_DIR}/data/about.md:/app/build/client/md/about.md
     ports:
-      - "3000:3000"
+      - "${APP_PORT}:3000"
     networks:
       - wanderer
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:3000/"]
+      test: ["CMD", "/curl", "--fail", "http://localhost:3000/"]
       interval: 15s
       retries: 10
       start_period: 20s
@@ -86,7 +84,7 @@ services:
 #   ports:
 #     - "8002:8002"
 #   volumes:
-#     - ./data/valhalla:/custom_files
+#     - ${BASE_DIR}/data/valhalla:/custom_files
 #   environment:
 #     - tile_urls=https://download.geofabrik.de/europe/germany/bayern/oberbayern-latest.osm.pbf
 #     - use_tiles_ignore_pbf=True
